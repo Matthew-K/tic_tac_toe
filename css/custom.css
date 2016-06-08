@@ -1,0 +1,40 @@
+.board{
+	display: block;
+	margin: 35px auto;
+	width: 405px;
+	border: 2px solid green;
+}
+
+.border-bottom{
+	border-bottom: 2px solid green;
+}
+
+.border-right{
+	border-right: 2px solid green;
+}
+
+.col-xs-4{
+	height: 100%;
+	padding: 0;
+}
+
+.row{
+	margin: 0;
+	height:133px;
+}
+.tile{
+	width: 50px;
+}
+
+
+@media only screen and (max-width: 435px) {
+	
+	.board{
+		/*margin: 15px*/
+		width: 250px;
+	}
+	.row{
+		height: 82px;
+	}
+}
+}
