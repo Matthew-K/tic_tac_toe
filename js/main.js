@@ -3,8 +3,20 @@
 var model = {
 
 	avatar: {
-		user: null,
+		user: 'X',
 		ai: null
+	},
+
+	boxes: {
+		topLeft: null,
+		topMiddle: null,
+		topRight: null,
+		middleLeft: null,
+		middleMiddle: null,
+		middleRight: null,
+		bottomLeft: null,
+		bottomMiddle: null,
+		bottomRight: null,
 	}
 
 };
@@ -22,6 +34,22 @@ var controller = {
 	setAvatars: function(user, ai){
 		model.avatar.user = user;
 		model.avatar.ai = ai;
+	},
+
+	updateBox: function(boxName){
+		model.boxes[boxName] = "boom";
+	},
+
+	getBox: function(boxName){
+		return model.boxes[boxName];
+	},
+
+	getAvatar: function(userOrAI){
+		if(userOrAI === 'user'){
+			return model.avatar.user;
+		} else if(userOrAI === 'ai'){
+			return model.avatar.user;
+		}
 	}
 
 };
@@ -34,8 +62,9 @@ var controller = {
 var view = {
 
 	init: function(){
-		$('#myModal').modal('show');
-		view.chooseAvatar();
+		// $('#myModal').modal('show');
+		// view.chooseAvatar();
+		view.boxClick();
 	},
 
 	chooseAvatar: function(){
@@ -55,8 +84,20 @@ var view = {
 			controller.setAvatars('O', 'X');
 			$('#myModal').modal('hide');
 		});
-	}
+	},
 
+	boxClick: function(){
+		$(".box").on("click", function(){
+			var box = $(this).attr('id');
+			// if box is already filled
+			if(controller.getBox(box) !== null){
+				return;
+			} else {
+				controller.updateBox(box);
+				$(this).text(controller.getAvatar('user'));
+			}
+		});
+	}
 };
 
 
