@@ -4,7 +4,7 @@ var model = {
 
 	avatar: {
 		user: 'X',
-		ai: null
+		ai: "O"
 	},
 
 	board: {
@@ -50,7 +50,7 @@ var controller = {
 		if(userOrAI === 'user'){
 			return model.avatar.user;
 		} else if(userOrAI === 'ai'){
-			return model.avatar.user;
+			return model.avatar.ai;
 		}
 	},
 
@@ -165,8 +165,31 @@ var view = {
 				controller.updateBox(box, 'user');
 				$(this).text(controller.getAvatar('user'));
 				controller.checkForWinner();
+				if(controller.isWinner() === false){
+					view.aiChoice();
+				}
 			}
 		});
+	},
+
+	aiChoice: function(){
+		var board = controller.getBoard();
+		var options = [];
+		for(var key in board){
+			if(board[key] === ""){
+				options.push(key);
+			}
+		}
+		var length = options.length;
+		// console.log(options);
+		// console.log(length);
+
+		var box = Math.floor((Math.random() * length));
+		// box will be a number 0 through (options.length -1)
+		box = options[box];
+		// console.log(box);
+		controller.updateBox(box, "ai");
+		$("#" + box).text(controller.getAvatar("ai"));
 	}
 };
 
