@@ -131,7 +131,23 @@ var controller = {
 				winnerIs = "ai";
 			}
 			view.showWinner(winnerIs);
+		} else if (controller.checkTie()){
+			view.cantClick();
+			view.showWinner("tie");
 		}
+	},
+
+	checkTie: function(){
+		var board = controller.getBoard();
+		// check if any boxes are left
+		for (var key in board){
+			console.log(board[key]);
+			if(board[key] === ""){
+				return false;
+			}
+		// if not, return true
+		}
+		return true;
 	}
 
 };
@@ -208,12 +224,13 @@ var view = {
 		controller.checkForWinner(avatar);
 	},
 
-	showWinner: function(userOrAI){
-		console.log(userOrAI);
-		if(userOrAI === 'user'){
+	showWinner: function(winner){
+		if(winner === 'user'){
 			$('#userWins').modal('show');
-		} else{
+		} else if(winner === "ai"){
 			$('#aiWins').modal('show');
+		} else{
+			$('#tie').modal('show');
 		}
 	}
 };
