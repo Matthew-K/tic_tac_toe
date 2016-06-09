@@ -66,58 +66,71 @@ var controller = {
 		return model.board;
 	},
 
-	checkForWinner: function(){
+	checkForWinner: function(XorO){
 		var board = controller.getBoard();
 		board = [
-			[  board.topLeft,     board.topMiddle,     board.topRight     ],
-			[  board.middleLeft,  board.middleMiddle,  board.middleRight  ],
-			[  board.bottomLeft,  board.bottomMiddle,  board.bottomRight  ]
+			[ board.topLeft,    board.topMiddle,    board.topRight    ],
+			[ board.middleLeft, board.middleMiddle, board.middleRight ],
+			[ board.bottomLeft, board.bottomMiddle, board.bottomRight ]
 		];
 
-		var check = "X";
+		var check = XorO;
 
 		// value should be false
 		var winner = controller.isWinner();
 
-		// Check all horizontal rows for 3 matches
-		for(var i = 0; i < board.length; i++){
-			for (var b = 0; b < board[i].length; b++){
-				if(board[i][b] !== check){
-					winner = false;
+		if(!winner){
+			// Check horizontal rows for 3 matches
+			for(var i = 0; i < board.length; i++){
+				for (var b = 0; b < board[i].length; b++){
+					if(board[i][b] !== check){
+						winner = false;
+						break;
+					}
+					winner = true;
+				}
+				if(winner === true){
+					controller.updateWinner(true);
 					break;
 				}
-				winner = true;
-			}
-			if(winner === true){
-				controller.updateWinner(true);
-				return;
 			}
 		}
-
-		// Check vertical columns for 3 matches
-		for(var j = 0; j < board.length; j++){
-			for (var k = 0; k < board[j].length; k++){
-				if(board[k][j] !== check){
-					winner = false;
+		if(!winner){
+			// Check vertical columns for 3 matches
+			for(var j = 0; j < board.length; j++){
+				for (var k = 0; k < board[j].length; k++){
+					if(board[k][j] !== check){
+						winner = false;
+						break;
+					}
+					winner = true;
+				}
+				if(winner === true){
+					controller.updateWinner(true);
 					break;
 				}
-				winner = true;
-			}
-			if(winner === true){
-				controller.updateWinner(true);
-				return;
 			}
 		}
-
-		// Check diagonals for 3 matches		
-		if(board[0][0] === check && board[1][1] === check && board[2][2] ===check){
-			winner = true;
-			controller.updateWinner(true);
-			return;
-		} else if(board[0][2] === check && board[1][1] === check && board[2][0] === check){
-			winner = true;
-			controller.updateWinner(true);
-			return;
+		if(!winner){
+			// Check diagonals for 3 matches		
+			if(board[0][0] === check && board[1][1] === check && board[2][2] ===check){
+				winner = true;
+				controller.updateWinner(true);
+			} else if(board[0][2] === check && board[1][1] === check && board[2][0] === check){
+				winner = true;
+				controller.updateWinner(true);
+			}
+		}
+		if(winner){
+			view.cantClick();
+			var winnerIs = '';
+			avatars = model.avatar;
+			if(check === avatars.user){
+				winnerIs = "user";
+			} else if(check === avatars.ai){
+				winnerIs = "ai";
+			}
+			view.showWinner(winnerIs);
 		}
 	}
 
@@ -131,7 +144,7 @@ var controller = {
 var view = {
 
 	init: function(){
-		// $('#myModal').modal('show');
+		// $('#avatarChoice').modal('show');
 		// view.chooseAvatar();
 		view.boxClick();
 	},
@@ -163,13 +176,18 @@ var view = {
 				return;
 			} else {
 				controller.updateBox(box, 'user');
-				$(this).text(controller.getAvatar('user'));
-				controller.checkForWinner();
+				var avatar = controller.getAvatar('user');
+				$(this).text(avatar);
+				controller.checkForWinner(avatar);
 				if(controller.isWinner() === false){
 					view.aiChoice();
 				}
 			}
 		});
+	},
+
+	cantClick: function(){
+		$(".box").off("click");
 	},
 
 	aiChoice: function(){
@@ -181,15 +199,22 @@ var view = {
 			}
 		}
 		var length = options.length;
-		// console.log(options);
-		// console.log(length);
-
 		var box = Math.floor((Math.random() * length));
 		// box will be a number 0 through (options.length -1)
 		box = options[box];
-		// console.log(box);
 		controller.updateBox(box, "ai");
-		$("#" + box).text(controller.getAvatar("ai"));
+		var avatar = controller.getAvatar("ai");
+		$("#" + box).text(avatar);
+		controller.checkForWinner(avatar);
+	},
+
+	showWinner: function(userOrAI){
+		console.log(userOrAI);
+		if(userOrAI === 'user'){
+			$('#userWins').modal('show');
+		} else{
+			$('#aiWins').modal('show');
+		}
 	}
 };
 
