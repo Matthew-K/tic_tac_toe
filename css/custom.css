@@ -13,6 +13,10 @@
 	border-right: 2px solid green;
 }
 
+.pointer{
+	cursor: pointer;
+}
+
 .col-xs-4{
 	height: 100%;
 	padding: 0;
