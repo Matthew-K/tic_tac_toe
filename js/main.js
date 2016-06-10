@@ -76,7 +76,7 @@ var controller = {
 
 		var check = XorO;
 
-		// value should be false
+		// Value should be false
 		var winner = controller.isWinner();
 
 		if(!winner){
@@ -131,23 +131,40 @@ var controller = {
 				winnerIs = "ai";
 			}
 			view.showWinner(winnerIs);
+			controller.resetData();		
 		} else if (controller.checkTie()){
 			view.cantClick();
 			view.showWinner("tie");
+			controller.resetData();
 		}
 	},
 
 	checkTie: function(){
 		var board = controller.getBoard();
-		// check if any boxes are left
+		// Check if any boxes are left
 		for (var key in board){
-			console.log(board[key]);
 			if(board[key] === ""){
 				return false;
 			}
-		// if not, return true
+		// If not, return true (there is a tie)
 		}
 		return true;
+	},
+
+	resetData: function(){
+		controller.setAvatars("","");
+		controller.updateWinner(false);
+		model.board =  {
+			topLeft: "",
+			topMiddle: "",
+			topRight: "",
+			middleLeft: "",
+			middleMiddle: "",
+			middleRight: "",
+			bottomLeft: "",
+			bottomMiddle: "",
+			bottomRight: "",
+		};
 	}
 
 };
@@ -187,7 +204,7 @@ var view = {
 	boxClick: function(){
 		$(".box").on("click", function(){
 			var box = $(this).attr('id');
-			// if box is already filled
+			// If box is already filled, return
 			if(controller.getBox(box) !== ""){
 				return;
 			} else {
@@ -227,12 +244,25 @@ var view = {
 	showWinner: function(winner){
 		if(winner === 'user'){
 			$('#userWins').modal('show');
+			// Clear board when modal is closed
+			$("#userWins").on('hide.bs.modal', function () {
+            	$(".box").text("");
+    		});
 		} else if(winner === "ai"){
 			$('#aiWins').modal('show');
+			// Clear board when modal is closed
+			$("#aiWins").on('hide.bs.modal', function () {
+            	$(".box").text("");
+    		});
 		} else{
 			$('#tie').modal('show');
+			// Clear board when modal is closed
+			$("#tie").on('hide.bs.modal', function () {
+            	$(".box").text("");
+    		});
 		}
 	}
+
 };
 
 
