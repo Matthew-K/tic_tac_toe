@@ -243,7 +243,7 @@ var view = {
 		box = options[box];
 		controller.updateBox(box, "ai");
 		var avatar = controller.getAvatar("ai");
-		$("#" + box).text(avatar);
+		$("#" + box).html("<span class='greenText'>" + avatar + "</span>");
 		controller.checkForWinner(avatar);
 	},
 

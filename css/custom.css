@@ -53,6 +53,13 @@ h1{
 	width: 50px;
 }
 
+.greenText{
+	color: #00C43B;
+}
+
+
+/* Modals
+===================================*/
 #avatarChoice .modal-dialog{
 	margin-top: 90px;
 }
@@ -76,6 +83,8 @@ h1{
 }
 
 
+/* Media Queries
+===================================*/
 @media only screen and (max-width: 435px) {	
 
 	.board{
@@ -90,7 +99,6 @@ h1{
 		border: 3px solid #333333;
 		font-size: 28px;
 	}
-
 
 	.border-bottom{
 		border-bottom: 3px solid #333333;
