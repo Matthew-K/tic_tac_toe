@@ -67,6 +67,8 @@ var controller = {
 	},
 
 	checkForWinner: function(XorO){
+		console.log(model.board);
+		// console.log(model.);
 		var board = controller.getBoard();
 		board = [
 			[ board.topLeft,    board.topMiddle,    board.topRight    ],
@@ -78,7 +80,6 @@ var controller = {
 
 		// Value should be false
 		var winner = controller.isWinner();
-
 		if(!winner){
 			// Check horizontal rows for 3 matches
 			for(var i = 0; i < board.length; i++){
@@ -118,7 +119,6 @@ var controller = {
 				controller.updateWinner(true);
 			} else if(board[0][2] === check && board[1][1] === check && board[2][0] === check){
 				winner = true;
-				controller.updateWinner(true);
 			}
 		}
 		if(winner){
@@ -129,13 +129,10 @@ var controller = {
 				winnerIs = "user";
 			} else if(check === avatars.ai){
 				winnerIs = "ai";
-			}
-			view.showWinner(winnerIs);
-			controller.resetData();		
+			}	
+			return controller.endGame(winnerIs);	
 		} else if (controller.checkTie()){
-			view.cantClick();
-			view.showWinner("tie");
-			controller.resetData();
+			return controller.endGame('tie');
 		}
 	},
 
@@ -151,8 +148,13 @@ var controller = {
 		return true;
 	},
 
+	endGame: function(winner){
+		view.cantClick();
+		view.showWinner(winner);
+	},
+
 	resetData: function(){
-		controller.setAvatars("","");
+		// controller.setAvatars("","");
 		controller.updateWinner(false);
 		model.board =  {
 			topLeft: "",
@@ -244,22 +246,38 @@ var view = {
 	showWinner: function(winner){
 		if(winner === 'user'){
 			$('#userWins').modal('show');
-			// Clear board when modal is closed
+			// Clear board when modal is closed and restart game
 			$("#userWins").on('hide.bs.modal', function () {
             	$(".box").text("");
+            	controller.resetData();
+            	view.gameStart('ai');
     		});
 		} else if(winner === "ai"){
 			$('#aiWins').modal('show');
-			// Clear board when modal is closed
+			// Clear board when modal is closed and restart game
 			$("#aiWins").on('hide.bs.modal', function () {
             	$(".box").text("");
+            	controller.resetData();
+            	view.gameStart('user');
     		});
 		} else{
 			$('#tie').modal('show');
-			// Clear board when modal is closed
+			// Clear board when modal is closed and restart game
 			$("#tie").on('hide.bs.modal', function () {
             	$(".box").text("");
+            	controller.resetData();
+            	view.gameStart('user');
     		});
+		}
+	},
+
+	// Input is who will start a match, 'user' or 'ai'
+	gameStart: function(userOrAI){
+		if (userOrAI === "user"){
+			view.boxClick();
+		} else if (userOrAI === "ai"){
+			view.aiChoice();
+			view.boxClick();
 		}
 	}
 
