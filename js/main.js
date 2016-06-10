@@ -76,10 +76,9 @@ var controller = {
 			[ board.bottomLeft, board.bottomMiddle, board.bottomRight ]
 		];
 
-		var check = XorO;
+		var check = XorO; 
+		var winner = controller.isWinner(); // Value should be false before checking rows, columns, and diagonals for 3 in a row
 
-		// Value should be false
-		var winner = controller.isWinner();
 		if(!winner){
 			// Check horizontal rows for 3 matches
 			for(var i = 0; i < board.length; i++){
@@ -119,18 +118,19 @@ var controller = {
 				controller.updateWinner(true);
 			} else if(board[0][2] === check && board[1][1] === check && board[2][0] === check){
 				winner = true;
+				controller.updateWinner(true);
 			}
 		}
+		var winnerIs = '';
 		if(winner){
-			view.cantClick();
-			var winnerIs = '';
-			avatars = model.avatar;
+			var avatars = model.avatar;
 			if(check === avatars.user){
 				winnerIs = "user";
 			} else if(check === avatars.ai){
 				winnerIs = "ai";
 			}	
-			return controller.endGame(winnerIs);	
+			return controller.endGame(winnerIs);
+		// Else if there is a tie	
 		} else if (controller.checkTie()){
 			return controller.endGame('tie');
 		}
@@ -148,9 +148,9 @@ var controller = {
 		return true;
 	},
 
-	endGame: function(winner){
+	endGame: function(winnerOrTie){
 		view.cantClick();
-		view.showWinner(winner);
+		view.showWinner(winnerOrTie);
 	},
 
 	resetData: function(){
@@ -189,20 +189,23 @@ var view = {
 		view.avatarO();
 	},
 
+	// Click handler for avatar choice when app first initialized
 	avatarX: function(){
 		$("#avatarX").on("click", function(){
 			controller.setAvatars('X', 'O');
-			$('#myModal').modal('hide');
+			$('#avatarChoice').modal('hide');
 		});
 	},
 
+	// Click handler for avatar choice when app first initialized
 	avatarO: function(){
 		$("#avatarO").on("click", function(){
 			controller.setAvatars('O', 'X');
-			$('#myModal').modal('hide');
+			$('#avatarChoice').modal('hide');
 		});
 	},
 
+	// Click handler for clicking on boxes when user's turn
 	boxClick: function(){
 		$(".box").on("click", function(){
 			var box = $(this).attr('id');
@@ -221,6 +224,7 @@ var view = {
 		});
 	},
 
+	// Disable user's ability to click on boxes
 	cantClick: function(){
 		$(".box").off("click");
 	},
