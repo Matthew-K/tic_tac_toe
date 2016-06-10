@@ -179,8 +179,8 @@ var controller = {
 var view = {
 
 	init: function(){
-		// $('#avatarChoice').modal('show');
-		// view.chooseAvatar();
+		$('#avatarChoice').modal('show');
+		view.chooseAvatar();
 		view.boxClick();
 	},
 
