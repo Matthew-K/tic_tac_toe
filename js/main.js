@@ -75,7 +75,15 @@ var controller = {
 			[ board.middleLeft, board.middleMiddle, board.middleRight ],
 			[ board.bottomLeft, board.bottomMiddle, board.bottomRight ]
 		];
-
+		// topLeft: "",
+		// topMiddle: "",
+		// topRight: "",
+		// middleLeft: "",
+		// middleMiddle: "",
+		// middleRight: "",
+		// bottomLeft: "",
+		// bottomMiddle: "",
+		// bottomRight: "",
 		winningRows = 	[	// horizontal rows
 							[board[0][0], board[0][1], board[0][2]],
 							[board[1][0], board[1][1], board[1][2]],
@@ -159,7 +167,98 @@ var controller = {
 			bottomMiddle: "",
 			bottomRight: "",
 		};
-	}
+	},
+
+	aiChoice: function(){
+		var board = controller.getBoard();
+
+		// Easier to visualize board
+		board2 = [
+			[ board.topLeft,    board.topMiddle,    board.topRight    ],
+			[ board.middleLeft, board.middleMiddle, board.middleRight ],
+			[ board.bottomLeft, board.bottomMiddle, board.bottomRight ]
+		];
+
+		var strings = 	[	// horizontal rows
+							['topLeft', 	'topMiddle', 	'topRight'],
+							['middleLeft', 	'middleMiddle', 'middleRight'],
+							['bottomLeft', 	'bottomMiddle', 'bottomRight'],
+
+							// vertical rows
+							['topLeft', 	'middleLeft', 	'bottomLeft'],
+							['topMiddle', 	'middleMiddle', 'bottomMiddle'],
+							['topRight', 	'middleRight', 	'bottomRight'],
+
+							// diagonal rows
+							['topLeft', 	'middleMiddle', 'bottomRight'],
+							['topRight', 	'middleMiddle', 'bottomLeft']
+						];
+
+		var winningRows = 	[	// horizontal rows
+							[board2[0][0], board2[0][1], board2[0][2]],
+							[board2[1][0], board2[1][1], board2[1][2]],
+							[board2[2][0], board2[2][1], board2[2][2]],
+
+							// vertical rows
+							[board2[0][0], board2[1][0], board2[2][0]],
+							[board2[0][1], board2[1][1], board2[2][1]],
+							[board2[0][2], board2[1][2], board2[2][2]],
+
+							// diagonal rows
+							[board2[0][0], board2[1][1], board2[2][2]],
+							[board2[0][2], board2[1][1], board2[2][0]]
+						];
+
+		var userAvatar = controller.getAvatar('user'); 
+		var aiAvatar = controller.getAvatar('ai');
+		var box = '';
+
+		// Check if any possible winning rows contain three in a row of avatar's value
+		for(var i = 0; i < winningRows.length; i++){
+			var inARow = 0;
+			for(var j = 0; j < winningRows[i].length; j++){
+				if(winningRows[i][j] !== userAvatar){
+				} else {
+					inARow ++;
+				}
+			}
+			if(inARow === 2){		
+				var winningRow = winningRows[i];
+				var winningStrings = strings[i];
+
+				for(var n = 0; n < winningRow.length; n++){
+					if(winningRow[n] === ''){
+						box = winningStrings[n];
+						controller.updateBox(box, "ai");
+						//seperate into view
+						$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
+						controller.checkForWinner(aiAvatar);
+						return;
+					}
+				}
+			} else {
+				inARow = 0;
+			}
+		}
+
+		// RANDOM CHOICE
+		//==========================
+		var options = [];
+		for(var key in board){
+			if(board[key] === ""){
+				options.push(key);
+			}
+		}
+		var length = options.length;
+		box = Math.floor((Math.random() * length));
+		// box will be a number 0 through (options.length -1)
+		box = options[box];
+		controller.updateBox(box, "ai");
+		var avatar = controller.getAvatar("ai");
+		$("#" + box).html("<span class='greenText'>" + avatar + "</span>");
+		controller.checkForWinner(avatar);
+
+	},
 
 };
 
@@ -210,7 +309,7 @@ var view = {
 				$(this).text(avatar);
 				controller.checkForWinner(avatar);
 				if(controller.isWinner() === false){
-					view.aiChoice();
+					controller.aiChoice();
 				}
 			}
 		});
@@ -219,24 +318,6 @@ var view = {
 	// Disable user's ability to click on boxes
 	cantClick: function(){
 		$(".box").off("click");
-	},
-
-	aiChoice: function(){
-		var board = controller.getBoard();
-		var options = [];
-		for(var key in board){
-			if(board[key] === ""){
-				options.push(key);
-			}
-		}
-		var length = options.length;
-		var box = Math.floor((Math.random() * length));
-		// box will be a number 0 through (options.length -1)
-		box = options[box];
-		controller.updateBox(box, "ai");
-		var avatar = controller.getAvatar("ai");
-		$("#" + box).html("<span class='greenText'>" + avatar + "</span>");
-		controller.checkForWinner(avatar);
 	},
 
 	showWinner: function(winner){
@@ -272,7 +353,7 @@ var view = {
 		if (userOrAI === "user"){
 			view.boxClick();
 		} else if (userOrAI === "ai"){
-			view.aiChoice();
+			controller.aiChoice();
 			view.boxClick();
 		}
 	}
