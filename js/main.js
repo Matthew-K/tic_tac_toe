@@ -211,20 +211,25 @@ var controller = {
 
 		var userAvatar = controller.getAvatar('user'); 
 		var aiAvatar = controller.getAvatar('ai');
-		var box = '';
 
-		// Check if any possible winning rows contain three in a row of avatar's value
+		var winningRow = null;
+		var winningStrings = null;
+		var inARow = null;
+		var box = null;
+
+		// If winning move is available, choose it
+		// =============================================
 		for(var i = 0; i < winningRows.length; i++){
-			var inARow = 0;
+
+			inARow = 0;
 			for(var j = 0; j < winningRows[i].length; j++){
-				if(winningRows[i][j] !== userAvatar){
-				} else {
+				if(winningRows[i][j] === aiAvatar){
 					inARow ++;
 				}
 			}
-			if(inARow === 2){		
-				var winningRow = winningRows[i];
-				var winningStrings = strings[i];
+			if(inARow === 2){	
+				winningRow = winningRows[i];
+				winningStrings = strings[i];
 
 				for(var n = 0; n < winningRow.length; n++){
 					if(winningRow[n] === ''){
@@ -241,8 +246,37 @@ var controller = {
 			}
 		}
 
+		// Block if user has two in a row
+		// =============================================
+		for(var k = 0; k < winningRows.length; k++){
+			inARow = 0;
+			for(var p = 0; p < winningRows[k].length; p++){
+				if(winningRows[k][p] !== userAvatar){
+				} else {
+					inARow ++;
+				}
+			}
+			if(inARow === 2){		
+				winningRow = winningRows[k];
+				winningStrings = strings[k];
+
+				for(var m = 0; m < winningRow.length; m++){
+					if(winningRow[m] === ''){
+						box = winningStrings[m];
+						controller.updateBox(box, "ai");
+						//seperate into view
+						$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
+						controller.checkForWinner(aiAvatar);
+						return;
+					}
+				}
+			} else {
+				inARow = 0;
+			}
+		}
+
 		// RANDOM CHOICE
-		//==========================
+		// =============================================
 		var options = [];
 		for(var key in board){
 			if(board[key] === ""){
