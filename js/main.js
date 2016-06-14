@@ -67,66 +67,57 @@ var controller = {
 	},
 
 	checkForWinner: function(XorO){
-		console.log(model.board);
-		// console.log(model.);
 		var board = controller.getBoard();
+
+		// Easier to visualize board
 		board = [
 			[ board.topLeft,    board.topMiddle,    board.topRight    ],
 			[ board.middleLeft, board.middleMiddle, board.middleRight ],
 			[ board.bottomLeft, board.bottomMiddle, board.bottomRight ]
 		];
 
-		var check = XorO; 
-		var winner = controller.isWinner(); // Value should be false before checking rows, columns, and diagonals for 3 in a row
+		winningRows = 	[	// horizontal rows
+							[board[0][0], board[0][1], board[0][2]],
+							[board[1][0], board[1][1], board[1][2]],
+							[board[2][0], board[2][1], board[2][2]],
 
-		if(!winner){
-			// Check horizontal rows for 3 matches
-			for(var i = 0; i < board.length; i++){
-				for (var b = 0; b < board[i].length; b++){
-					if(board[i][b] !== check){
-						winner = false;
-						break;
-					}
+							// vertical rows
+							[board[0][0], board[1][0], board[2][0]],
+							[board[0][1], board[1][1], board[2][1]],
+							[board[0][2], board[1][2], board[2][2]],
+
+							// diagonal rows
+							[board[0][0], board[1][1], board[2][2]],
+							[board[0][2], board[1][1], board[2][0]]
+						];
+
+		var avatar = XorO; 
+		var winner = controller.isWinner(); // Value should be false before checking for winning rows
+
+		// Check if any possible winning rows contain three in a row of avatar's value
+		for(var i = 0; i < winningRows.length; i++){
+			for(var j = 0; j < winningRows[i].length; j++){
+				if(winningRows[i][j] !== avatar){
+					winner = false;
+					break;
+				} else {
 					winner = true;
 				}
-				if(winner === true){
-					controller.updateWinner(true);
-					break;
-				}
 			}
-		}
-		if(!winner){
-			// Check vertical columns for 3 matches
-			for(var j = 0; j < board.length; j++){
-				for (var k = 0; k < board[j].length; k++){
-					if(board[k][j] !== check){
-						winner = false;
-						break;
-					}
-					winner = true;
-				}
-				if(winner === true){
-					controller.updateWinner(true);
-					break;
-				}
-			}
-		}
-		if(!winner){
-			// Check diagonals for 3 matches		
-			if(board[0][0] === check && board[1][1] === check && board[2][2] ===check){
+			if(winner === true){
 				winner = true;
 				controller.updateWinner(true);
-			} else if(board[0][2] === check && board[1][1] === check && board[2][0] === check){
-				winner = true;
-				controller.updateWinner(true);
+				break;
 			}
 		}
+
 		var winnerIs = '';
 		if(winner){
 			var avatars = model.avatar;
-			if(check === avatars.user){
+			// Check to see if avatar belongs to user or computer(ai);
+			if(avatar === avatars.user){
 				winnerIs = "user";
-			} else if(check === avatars.ai){
+			} else if(avatar === avatars.ai){
 				winnerIs = "ai";
 			}	
 			return controller.endGame(winnerIs);
@@ -134,6 +125,7 @@ var controller = {
 		} else if (controller.checkTie()){
 			return controller.endGame('tie');
 		}
+
 	},
 
 	checkTie: function(){
@@ -179,8 +171,8 @@ var controller = {
 var view = {
 
 	init: function(){
-		$('#avatarChoice').modal('show');
-		view.chooseAvatar();
+		// $('#avatarChoice').modal('show');
+		// view.chooseAvatar();
 		view.boxClick();
 	},
 
