@@ -75,15 +75,7 @@ var controller = {
 			[ board.middleLeft, board.middleMiddle, board.middleRight ],
 			[ board.bottomLeft, board.bottomMiddle, board.bottomRight ]
 		];
-		// topLeft: "",
-		// topMiddle: "",
-		// topRight: "",
-		// middleLeft: "",
-		// middleMiddle: "",
-		// middleRight: "",
-		// bottomLeft: "",
-		// bottomMiddle: "",
-		// bottomRight: "",
+
 		winningRows = 	[	// horizontal rows
 							[board[0][0], board[0][1], board[0][2]],
 							[board[1][0], board[1][1], board[1][2]],
@@ -179,21 +171,6 @@ var controller = {
 			[ board.bottomLeft, board.bottomMiddle, board.bottomRight ]
 		];
 
-		var strings = 	[	// horizontal rows
-							['topLeft', 	'topMiddle', 	'topRight'],
-							['middleLeft', 	'middleMiddle', 'middleRight'],
-							['bottomLeft', 	'bottomMiddle', 'bottomRight'],
-
-							// vertical rows
-							['topLeft', 	'middleLeft', 	'bottomLeft'],
-							['topMiddle', 	'middleMiddle', 'bottomMiddle'],
-							['topRight', 	'middleRight', 	'bottomRight'],
-
-							// diagonal rows
-							['topLeft', 	'middleMiddle', 'bottomRight'],
-							['topRight', 	'middleMiddle', 'bottomLeft']
-						];
-
 		var winningRows = 	[	// horizontal rows
 							[board2[0][0], board2[0][1], board2[0][2]],
 							[board2[1][0], board2[1][1], board2[1][2]],
@@ -207,6 +184,22 @@ var controller = {
 							// diagonal rows
 							[board2[0][0], board2[1][1], board2[2][2]],
 							[board2[0][2], board2[1][1], board2[2][0]]
+						];
+
+		// Winning rows represeted by strings
+		var strings = 	[	// horizontal rows
+							['topLeft', 	'topMiddle', 	'topRight'],
+							['middleLeft', 	'middleMiddle', 'middleRight'],
+							['bottomLeft', 	'bottomMiddle', 'bottomRight'],
+
+							// vertical rows
+							['topLeft', 	'middleLeft', 	'bottomLeft'],
+							['topMiddle', 	'middleMiddle', 'bottomMiddle'],
+							['topRight', 	'middleRight', 	'bottomRight'],
+
+							// diagonal rows
+							['topLeft', 	'middleMiddle', 'bottomRight'],
+							['topRight', 	'middleMiddle', 'bottomLeft']
 						];
 
 		var userAvatar = controller.getAvatar('user'); 
@@ -293,7 +286,6 @@ var controller = {
 			oppositeCorner = true;
 		}
 		if(oppositeCorner === true){
-			console.log("hello");
 			controller.updateBox(box, "ai");
 			$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
 			controller.checkForWinner(aiAvatar);
@@ -321,6 +313,18 @@ var controller = {
 			return;
 		}
 
+		// Pick a side if available (should be if function reaches this point)
+		// =============================================
+		var sides = ['topMiddle', 'middleLeft', 'middleRight', 'bottomMiddle'];
+		for (var s = 0; s < sides.length; s++){
+			if(board[sides[s]] === ''){
+				box = sides[s];
+				controller.updateBox(box, "ai");
+				$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
+				controller.checkForWinner(aiAvatar);
+				return;
+			}
+		}
 	}
 
 };
