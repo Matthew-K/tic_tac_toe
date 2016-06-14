@@ -275,6 +275,23 @@ var controller = {
 			}
 		}
 
+		// Pick a Corner if Available
+		// =============================================
+		var corners = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
+		for(var c = 0; c < corners.length; c++){
+			if (board[corners[c]] === ""){
+				// console.log(corners[c]);
+				// var randomCorner = Math.floor((Math.random() * corners.length));
+				// console.log(randomCorner);
+				box = corners[c];
+				console.log(box);
+				controller.updateBox(box, "ai");
+				$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
+				controller.checkForWinner(aiAvatar);
+				return;
+			}
+		}
+
 		// RANDOM CHOICE
 		// =============================================
 		var options = [];
