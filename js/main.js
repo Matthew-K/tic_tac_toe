@@ -275,16 +275,36 @@ var controller = {
 			}
 		}
 
-		// Pick a Corner if Available
+		// If user chose a corner, choose opposite corner
 		// =============================================
 		var corners = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
+		var oppositeCorner = false;
+		if(board[corners[0]] === userAvatar && board[corners[3]] === ''){
+			box =  corners[3];
+			oppositeCorner = true;
+		} else if(board[corners[1]] === userAvatar && board[corners[2]] === '' ){
+			box =  corners[2];
+			oppositeCorner = true;
+		} else if(board[corners[2]] === userAvatar && board[corners[1]] === ''){
+			box =  corners[1];
+			oppositeCorner = true;
+		} else if(board[corners[3]] === userAvatar && board[corners[0]] === ''){
+			box =  corners[0];
+			oppositeCorner = true;
+		}
+		if(oppositeCorner === true){
+			console.log("hello");
+			controller.updateBox(box, "ai");
+			$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
+			controller.checkForWinner(aiAvatar);
+			return;
+		}
+
+		// If corner available, pick a corner
+		// =============================================
 		for(var c = 0; c < corners.length; c++){
 			if (board[corners[c]] === ""){
-				// console.log(corners[c]);
-				// var randomCorner = Math.floor((Math.random() * corners.length));
-				// console.log(randomCorner);
 				box = corners[c];
-				console.log(box);
 				controller.updateBox(box, "ai");
 				$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
 				controller.checkForWinner(aiAvatar);
@@ -292,24 +312,16 @@ var controller = {
 			}
 		}
 
-		// RANDOM CHOICE
+		// Pick center if Available
 		// =============================================
-		var options = [];
-		for(var key in board){
-			if(board[key] === ""){
-				options.push(key);
-			}
+		if(board.middleMiddle === ''){
+			controller.updateBox('middleMiddle', "ai");
+			$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
+			controller.checkForWinner(aiAvatar);
+			return;
 		}
-		var length = options.length;
-		box = Math.floor((Math.random() * length));
-		// box will be a number 0 through (options.length -1)
-		box = options[box];
-		controller.updateBox(box, "ai");
-		var avatar = controller.getAvatar("ai");
-		$("#" + box).html("<span class='greenText'>" + avatar + "</span>");
-		controller.checkForWinner(avatar);
 
-	},
+	}
 
 };
 
