@@ -97,6 +97,23 @@ var controller = {
 		return winningRows;
 	},
 
+	// Winning rows represeted by strings
+	stringifiedRows: 	[	
+					// horizontal rows
+					['topLeft', 	'topMiddle', 	'topRight'],
+					['middleLeft', 	'middleMiddle', 'middleRight'],
+					['bottomLeft', 	'bottomMiddle', 'bottomRight'],
+
+					// vertical rows
+					['topLeft', 	'middleLeft', 	'bottomLeft'],
+					['topMiddle', 	'middleMiddle', 'bottomMiddle'],
+					['topRight', 	'middleRight', 	'bottomRight'],
+
+					// diagonal rows
+					['topLeft', 	'middleMiddle', 'bottomRight'],
+					['topRight', 	'middleMiddle', 'bottomLeft']
+				],
+
 	// Check for winner or tie
 	checkForWinner: function(XorO){
 		var winningRows = controller.getWinningRows();
@@ -172,56 +189,26 @@ var controller = {
 	},
 
 	aiChoice: function(){
-		var board = controller.getBoard();
+		if(controller.checkWinningMove()){
+			return;
+		} else if(controller.blockUser()){
+			return;
+		} else if(controller.chooseCenter()){
+			return;
+		} else if(controller.chooseOppCorner()){
+			return;
+		} else if(controller.chooseCorner()){
+			return;
+		} else{
+			controller.chooseSide();
+			return;
+		}
+	},
 
-		// Easier to visualize board
-		board2 = [
-			[ board.topLeft,    board.topMiddle,    board.topRight    ],
-			[ board.middleLeft, board.middleMiddle, board.middleRight ],
-			[ board.bottomLeft, board.bottomMiddle, board.bottomRight ]
-		];
-
-		var winningRows = 	[	// horizontal rows
-							[board2[0][0], board2[0][1], board2[0][2]],
-							[board2[1][0], board2[1][1], board2[1][2]],
-							[board2[2][0], board2[2][1], board2[2][2]],
-
-							// vertical rows
-							[board2[0][0], board2[1][0], board2[2][0]],
-							[board2[0][1], board2[1][1], board2[2][1]],
-							[board2[0][2], board2[1][2], board2[2][2]],
-
-							// diagonal rows
-							[board2[0][0], board2[1][1], board2[2][2]],
-							[board2[0][2], board2[1][1], board2[2][0]]
-						];
-
-		// Winning rows represeted by strings
-		var strings = 	[	// horizontal rows
-							['topLeft', 	'topMiddle', 	'topRight'],
-							['middleLeft', 	'middleMiddle', 'middleRight'],
-							['bottomLeft', 	'bottomMiddle', 'bottomRight'],
-
-							// vertical rows
-							['topLeft', 	'middleLeft', 	'bottomLeft'],
-							['topMiddle', 	'middleMiddle', 'bottomMiddle'],
-							['topRight', 	'middleRight', 	'bottomRight'],
-
-							// diagonal rows
-							['topLeft', 	'middleMiddle', 'bottomRight'],
-							['topRight', 	'middleMiddle', 'bottomLeft']
-						];
-
-		var userAvatar = controller.getAvatar('user'); 
+	checkWinningMove: function(){
+		var winningRows = controller.getWinningRows();
 		var aiAvatar = controller.getAvatar('ai');
-
-		var winningRow = null;
-		var winningStrings = null;
-		var inARow = null;
-		var box = null;
-
-		// If winning move is available, choose it
-		// =============================================
+		var stringifiedRows = controller.stringifiedRows;
 		for(var i = 0; i < winningRows.length; i++){
 
 			inARow = 0;
@@ -232,7 +219,7 @@ var controller = {
 			}
 			if(inARow === 2){	
 				winningRow = winningRows[i];
-				winningStrings = strings[i];
+				winningStrings = stringifiedRows[i];
 
 				for(var n = 0; n < winningRow.length; n++){
 					if(winningRow[n] === ''){
@@ -241,16 +228,22 @@ var controller = {
 						//seperate into view
 						$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
 						controller.checkForWinner(aiAvatar);
-						return;
+						return true;
 					}
 				}
 			} else {
 				inARow = 0;
 			}
 		}
+	},
 
-		// Block if user has two in a row
-		// =============================================
+	//Block if user has two in a row
+	blockUser: function(){
+		var winningRows = controller.getWinningRows();
+		var aiAvatar = controller.getAvatar('ai');
+		var stringifiedRows = controller.stringifiedRows;
+		var userAvatar = controller.getAvatar('user'); 
+
 		for(var k = 0; k < winningRows.length; k++){
 			inARow = 0;
 			for(var p = 0; p < winningRows[k].length; p++){
@@ -261,7 +254,7 @@ var controller = {
 			}
 			if(inARow === 2){		
 				winningRow = winningRows[k];
-				winningStrings = strings[k];
+				winningStrings = stringifiedRows[k];
 
 				for(var m = 0; m < winningRow.length; m++){
 					if(winningRow[m] === ''){
@@ -270,16 +263,20 @@ var controller = {
 						//seperate into view
 						$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
 						controller.checkForWinner(aiAvatar);
-						return;
+						return true;
 					}
 				}
 			} else {
 				inARow = 0;
 			}
 		}
+	},
 
-		// If user chose a corner, choose opposite corner
-		// =============================================
+	// If user chose a corner, choose opposite corner
+	chooseOppCorner: function(){
+		var userAvatar = controller.getAvatar('user'); 
+		var aiAvatar = controller.getAvatar('ai');
+		var board = controller.getBoard();
 		var corners = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
 		var oppositeCorner = false;
 		if(board[corners[0]] === userAvatar && board[corners[3]] === ''){
@@ -299,32 +296,40 @@ var controller = {
 			controller.updateBox(box, "ai");
 			$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
 			controller.checkForWinner(aiAvatar);
-			return;
+			return true;
 		}
+	},
 
-		// If corner available, pick a corner
-		// =============================================
+	// If corner available, pick a corner
+	chooseCorner: function(){
+		var board = controller.getBoard();
+		var aiAvatar = controller.getAvatar('ai');
+		var corners = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
 		for(var c = 0; c < corners.length; c++){
 			if (board[corners[c]] === ""){
-				box = corners[c];
+				var box = corners[c];
 				controller.updateBox(box, "ai");
 				$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
 				controller.checkForWinner(aiAvatar);
-				return;
+				return true;
 			}
 		}
+	},
 
-		// Pick center if Available
-		// =============================================
+	// Choose center if Available
+	chooseCenter: function(){
+		var board = controller.getBoard();
+		var aiAvatar = controller.getAvatar('ai');
 		if(board.middleMiddle === ''){
 			controller.updateBox('middleMiddle', "ai");
-			$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
+			$("#middleMiddle").html("<span class='greenText'>" + aiAvatar + "</span>");
 			controller.checkForWinner(aiAvatar);
-			return;
+			return true;
 		}
+	},
 
-		// Pick a side if available (should be if function reaches this point)
-		// =============================================
+	// Pick a side if available (should be if function reaches this point)
+	chooseSide: function(){
 		var sides = ['topMiddle', 'middleLeft', 'middleRight', 'bottomMiddle'];
 		for (var s = 0; s < sides.length; s++){
 			if(board[sides[s]] === ''){
@@ -332,7 +337,7 @@ var controller = {
 				controller.updateBox(box, "ai");
 				$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
 				controller.checkForWinner(aiAvatar);
-				return;
+				return true;
 			}
 		}
 	}
