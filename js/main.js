@@ -225,8 +225,7 @@ var controller = {
 					if(winningRow[n] === ''){
 						box = winningStrings[n];
 						controller.updateBox(box, "ai");
-						//seperate into view
-						$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
+						view.renderAIChoice(box);
 						controller.checkForWinner(aiAvatar);
 						return true;
 					}
@@ -260,8 +259,7 @@ var controller = {
 					if(winningRow[m] === ''){
 						box = winningStrings[m];
 						controller.updateBox(box, "ai");
-						//seperate into view
-						$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
+						view.renderAIChoice(box);
 						controller.checkForWinner(aiAvatar);
 						return true;
 					}
@@ -294,7 +292,7 @@ var controller = {
 		}
 		if(oppositeCorner === true){
 			controller.updateBox(box, "ai");
-			$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
+			view.renderAIChoice(box);
 			controller.checkForWinner(aiAvatar);
 			return true;
 		}
@@ -309,7 +307,7 @@ var controller = {
 			if (board[corners[c]] === ""){
 				var box = corners[c];
 				controller.updateBox(box, "ai");
-				$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
+				view.renderAIChoice(box);
 				controller.checkForWinner(aiAvatar);
 				return true;
 			}
@@ -322,7 +320,7 @@ var controller = {
 		var aiAvatar = controller.getAvatar('ai');
 		if(board.middleMiddle === ''){
 			controller.updateBox('middleMiddle', "ai");
-			$("#middleMiddle").html("<span class='greenText'>" + aiAvatar + "</span>");
+			view.renderAIChoice('middleMiddle');
 			controller.checkForWinner(aiAvatar);
 			return true;
 		}
@@ -335,7 +333,7 @@ var controller = {
 			if(board[sides[s]] === ''){
 				box = sides[s];
 				controller.updateBox(box, "ai");
-				$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
+				view.renderAIChoice(box);
 				controller.checkForWinner(aiAvatar);
 				return true;
 			}
@@ -395,6 +393,11 @@ var view = {
 				}
 			}
 		});
+	},
+
+	renderAIChoice: function(box){
+		var aiAvatar = controller.getAvatar('ai');
+		$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
 	},
 
 	// Disable user's ability to click on boxes
