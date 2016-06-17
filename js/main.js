@@ -397,7 +397,7 @@ var view = {
 
 	renderAIChoice: function(box){
 		var aiAvatar = controller.getAvatar('ai');
-		$("#" + box).html("<span class='greenText'>" + aiAvatar + "</span>");
+		$("#" + box).html("<span class='purpleText'>" + aiAvatar + "</span>");
 	},
 
 	// Disable user's ability to click on boxes

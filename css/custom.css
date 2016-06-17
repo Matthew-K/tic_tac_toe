@@ -6,32 +6,32 @@
 	display: block;
 	margin: 0 auto;
 	width: 405px;
-	border: 5px solid #333333;
+	border: 5px solid #173e43;
 	text-align: center;
 	font-size: 40px;
 	font-weight: bold;
-	color: #0097A7;
+	color: #3fb0ac;
 	border-radius: 5px;
 }
 
 body{
-	background: #B2EBF2;
+	background: #EAECC6;
 }
 
 h1{
 	font-size: 46px;
 	margin: 20px 0;
-	color: #333333;
+	color: #173e43;
 	font-family: 'Bitter', serif;
 }
 
 
 .border-bottom{
-	border-bottom: 5px solid #333333;
+	border-bottom: 5px solid #173e43;
 }
 
 .border-right{
-	border-right: 5px solid #333333;
+	border-right: 5px solid #173e43;
 }
 
 .pointer{
@@ -41,7 +41,7 @@ h1{
 .col-xs-4{
 	height: 100%;
 	padding: 40px 0 0 0;
-	background: #C8E6C9;
+	background: #dddfd4;
 }
 
 .row{
@@ -53,8 +53,8 @@ h1{
 	width: 50px;
 }
 
-.greenText{
-	color: #00C43B;
+.purpleText{
+	color: #7e3562;
 }
 
 
@@ -96,16 +96,16 @@ h1{
 	}
 
 	.board{
-		border: 3px solid #333333;
+		border: 3px solid #173e43;
 		font-size: 28px;
 	}
 
 	.border-bottom{
-		border-bottom: 3px solid #333333;
+		border-bottom: 3px solid #173e43;
 	}
 
 	.border-right{
-		border-right: 3px solid #333333;
+		border-right: 3px solid #173e43;
 	}
 
 	.col-xs-4{
