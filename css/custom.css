@@ -15,7 +15,7 @@
 }
 
 body{
-	background: #EAECC6;
+	background: #f1f2d9;
 }
 
 h1{
@@ -65,14 +65,14 @@ h1{
 }
 
 #avatarChoice .modal-body{
-	color: #0097A7;
+	color: #3fb0ac;
 	font-size: 55px;
 	height: 130px;
 }
 
 .winner .modal-dialog{
 	margin-top: 150px;
-	color: #0097A7 ;
+	color: #3fb0ac ;
 }
 
 .winner .modal-body {
