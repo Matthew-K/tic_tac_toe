@@ -66,31 +66,40 @@ var controller = {
 		return model.board;
 	},
 
-	checkForWinner: function(XorO){
-		var board = controller.getBoard();
-
-		// Easier to visualize board
+	// Uses model.board to return a board in a format resembling a tic, tac, toe board
+	getBoardB: function(){
+		board = controller.getBoard();
 		board = [
 			[ board.topLeft,    board.topMiddle,    board.topRight    ],
 			[ board.middleLeft, board.middleMiddle, board.middleRight ],
 			[ board.bottomLeft, board.bottomMiddle, board.bottomRight ]
 		];
+		return board;
+	},
 
+	// Returns an array of winning rows.
+	getWinningRows: function(){
+		board = controller.getBoardB();
 		winningRows = 	[	// horizontal rows
-							[board[0][0], board[0][1], board[0][2]],
-							[board[1][0], board[1][1], board[1][2]],
-							[board[2][0], board[2][1], board[2][2]],
+					[board[0][0], board[0][1], board[0][2]],
+					[board[1][0], board[1][1], board[1][2]],
+					[board[2][0], board[2][1], board[2][2]],
 
-							// vertical rows
-							[board[0][0], board[1][0], board[2][0]],
-							[board[0][1], board[1][1], board[2][1]],
-							[board[0][2], board[1][2], board[2][2]],
+					// vertical rows
+					[board[0][0], board[1][0], board[2][0]],
+					[board[0][1], board[1][1], board[2][1]],
+					[board[0][2], board[1][2], board[2][2]],
 
-							// diagonal rows
-							[board[0][0], board[1][1], board[2][2]],
-							[board[0][2], board[1][1], board[2][0]]
-						];
+					// diagonal rows
+					[board[0][0], board[1][1], board[2][2]],
+					[board[0][2], board[1][1], board[2][0]]
+				];
+		return winningRows;
+	},
 
+	// Check for winner or tie
+	checkForWinner: function(XorO){
+		var winningRows = controller.getWinningRows();
 		var avatar = XorO; 
 		var winner = controller.isWinner(); // Value should be false before checking for winning rows
 
@@ -105,27 +114,33 @@ var controller = {
 				}
 			}
 			if(winner === true){
-				winner = true;
 				controller.updateWinner(true);
-				break;
+				controller.endGame("winner", avatar);
+				return;
 			}
 		}
 
+		if (controller.checkTie()){
+			controller.endGame("tie");
+		}
+	},
+
+	endGame: function(winnerOrTie, avatar){
+		view.cantClick();
 		var winnerIs = '';
-		if(winner){
+
+		if(winnerOrTie === "winner"){
 			var avatars = model.avatar;
 			// Check to see if avatar belongs to user or computer(ai);
 			if(avatar === avatars.user){
 				winnerIs = "user";
 			} else if(avatar === avatars.ai){
 				winnerIs = "ai";
-			}	
-			return controller.endGame(winnerIs);
-		// Else if there is a tie	
-		} else if (controller.checkTie()){
-			return controller.endGame('tie');
+			}
+			view.showWinner(winnerIs);	
+		} else if (winnerOrTie === 'tie'){
+			view.showWinner('tie');
 		}
-
 	},
 
 	checkTie: function(){
@@ -138,11 +153,6 @@ var controller = {
 		// If not, return true (there is a tie)
 		}
 		return true;
-	},
-
-	endGame: function(winnerOrTie){
-		view.cantClick();
-		view.showWinner(winnerOrTie);
 	},
 
 	resetData: function(){
